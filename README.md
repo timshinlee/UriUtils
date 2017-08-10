@@ -14,6 +14,6 @@ allprojects {
 build.gradle of the module:
 ```
 dependencies {
-        compile 'com.github.timshinlee:UriUtils:1.0.0'
+        compile 'com.github.timshinlee:UriUtils:1.0.1'
 }
 ```
