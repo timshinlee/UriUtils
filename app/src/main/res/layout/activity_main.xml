@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.uriutils.MainActivity">
+
+    <Button
+        android:onClick="pick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ACTION_PICK"/>
+    <Button
+        android:onClick="getContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ACTION_GET_CONTENT"/>
+    <Button
+        android:onClick="openDocument"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ACTION_OPEN_DOCUMENT"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
