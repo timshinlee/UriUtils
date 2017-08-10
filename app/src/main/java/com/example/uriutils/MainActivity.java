@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getContent(View view) {
-        startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), 0);
+        startActivityForResult(new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), 0); // ES文件管理器返回的uri是mediaprovider，需要ReadExternal权限
     }
 
     public void pick(View view) {
