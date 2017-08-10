@@ -1,5 +1,6 @@
 package com.timshinlee.utils;
 
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,43 +13,46 @@ import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static android.R.attr.type;
-
 public class UriUtils {
+    private static final String TAG = "UriUtils";
+
     public static String getUriPath(Context context, Uri uri) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if ("content".equalsIgnoreCase(uri.getScheme())) {
-                if (isGooglePhotosUri(uri)) {
-                    return uri.getLastPathSegment();
-                }
+        if (null == uri) {
+            return null;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return getFilePath(context, uri, null, null);
+        }
+        // deal with KitKat and above
+        if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme())) {
+            if (isGooglePhotosUri(uri)) {
+                return uri.getLastPathSegment();
+            }
+            if (DocumentsContract.isDocumentUri(context, uri)) {
                 if (isExternalStorageDocument(uri)) {
                     return getExternalStorageDocument(uri);
                 }
-                return getFilePath(context, uri, null, null);
-            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                return uri.getPath();
-            } else if (DocumentsContract.isDocumentUri(context, uri)) {
+                if (isMediaDocument(uri)) {
+                    return getMediaDocumentPath(context, uri);
+                }
                 if (isDownloadsDocument(uri)) {
                     return getDownloadsDocumentPath(context, uri);
-                } else {
-                    if (isExternalStorageDocument(uri)) {
-                        return getExternalStorageDocument(uri);
-                    } else if (isMediaDocument(uri)) {
-                        return getMediaDocumentPath(context, uri);
-                    }
                 }
             }
-            return null;
-        } else { // below kitkat
             return getFilePath(context, uri, null, null);
+        } else if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
         }
+        return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String getMediaDocumentPath(Context context, Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
         final String[] split = documentId.split(":");
@@ -66,6 +70,7 @@ public class UriUtils {
         return getFilePath(context, contentUri, selection, selectionArgs);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     private static String getExternalStorageDocument(Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
@@ -79,6 +84,7 @@ public class UriUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String getDownloadsDocumentPath(Context context, Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
         final Uri downloadUri = ContentUris.withAppendedId(
