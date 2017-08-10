@@ -1,5 +1,6 @@
 package com.timshinlee.utils;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -12,8 +13,7 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -52,7 +52,7 @@ public class UriUtils {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static String getMediaDocumentPath(Context context, Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
         final String[] split = documentId.split(":");
@@ -70,8 +70,7 @@ public class UriUtils {
         return getFilePath(context, contentUri, selection, selectionArgs);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Nullable
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static String getExternalStorageDocument(Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
         final String[] split = documentId.split(":");
@@ -84,7 +83,7 @@ public class UriUtils {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static String getDownloadsDocumentPath(Context context, Uri uri) {
         final String documentId = DocumentsContract.getDocumentId(uri);
         final Uri downloadUri = ContentUris.withAppendedId(
@@ -113,6 +112,8 @@ public class UriUtils {
                 final int index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(index);
             }
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, e.getMessage(), e);
         } finally {
             if (cursor != null) {
                 cursor.close();
